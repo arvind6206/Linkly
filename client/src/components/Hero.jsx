@@ -1,10 +1,10 @@
-import React from "react";
+﻿import React from "react";
 import {AlertCircle, Check, Copy, Link} from 'lucide-react';
 import {Info} from 'lucide-react'
 import api from "../api/axios";
 import { useState } from "react";
 
-function Hero() {
+function Hero({onNewLink}) {
 
  const  [longUrl, setLongUrl] = useState("")
  const [pending, setPending] = useState(false)
@@ -28,6 +28,9 @@ function Hero() {
 
     setResult(res.data)
     setLongUrl("")
+    if(onNewLink){
+      onNewLink(res.data)
+    }
   } catch (err) {
     setError(err.response?.data?.message || "Something went wrong. Try again")
   } finally{

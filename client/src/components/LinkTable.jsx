@@ -1,137 +1,87 @@
-import React from 'react'
-import {Copy, Check, Link2} from 'lucide-react'
+import React from "react";
+import { Copy, Check, Link2 } from "lucide-react";
 
-const statusStyles = {
-    Active: {
-        color: "text-green-400",
-        dot: "bg-green-400/20",
-        icon: "text-green-400"
-    },
-    Inactive: {
-        color: "text-yellow-500",
-        dot: "bg-yellow-500/20",
-        icon: "text-yellow-500"
-    }
+const GRID_COLS = "grid-cols-[1.2fr_2fr_0.6fr_0.6fr_0.8fr_0.9fr]";
 
-}
-
-function StatusBadge({status}){
-    const s = statusStyles[status] || statusStyles.Active
-
-    return (
-        <div className='flex items-center gap-2'>
-            <span className={`text-sm font-medium ${s.color}`}>{status}</span>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center ${s.dot}`}>
-                <Link2 size={12} className={s.icon}/>
-            </span>
-
-        </div>
-    )
-}
-
-function LinkRow({link, onCopy, copiedId, faded = false}){
-    return (
-        <div className={`flex items-center gap-4 px-6 py-4 border-t border-[#1f2537]
-        ${faded ? "opacity-30 pointer-events-none select-none" : ""}`}>
-
-            <div className='flex items-center gap-2 w-56 shrink-0'>
-                <span className='text-sm text-gray-300 truncate'>{link.shortUrl}</span>
-                <button onClick={() => onCopy(link.id, link.shortUrl)}
-                className='w-6 h-6 rounded-full bg-[#232a3d] flex items-center justify-center
-                shrink-0 hover:bg-[#2c3448] transition-colors'
-                >
-                    {copiedId === link.id ? (
-                        <Check size={12} className='text-green-400'/>
-                    ) : (
-                        <Copy size={12} className='text-gray-400'/>
-                    )}
-
-                </button>
-
-            </div>
-
-            {/*original link*/}
-
-            <div className='flex items-center gap-2 flex-1 min-w-0'>
-                <img
-                src={link.favicon}
-                alt=""
-                className='w-6 h-6 rounded-md shrink-0 object-cover'
-                />
-
-                <span className='text-sm text-gray-300 truncate'>{link.originalUrl}</span>
-
-            </div>
-
-            {/*qr code*/}
-            <div className='w-14 shrink-0 flex-justify-center'>
-                <img
-                src={link.qrCode}
-                alt="WR code"
-                className='w-8 h-8 opacity-80'
-                />
-
-            </div>
-
-            <div className='w-16 shrink-0 text-sm text-gray-300 text-center'>
-                {link.clicks}
-            </div>
-
-            <div className='w-28 shrink-0'>
-                {link.status}
-            </div>
-
-            <div className='w-24 shrink-0 text-sm text-gray-400 text-right'>
-                {link.date}
-            </div>
-
-        </div>
-    )
-}
-
-export default function LinkTable({links = [], copiedId, onCopy}) {
-    const visitableLinks = links.slice(0, 5)
-    const teaserLink = links[5]
-
+function StatusBadge({ status }) {
+  const isActive = status === "Active";
   return (
-    <div className='bg-[#121712a] border border-[#1f2537] rounded-2xl overflow-hidden max-w-5xl mx-auto'>
-        <div className='flex items-center gap-4 px-6 py-4 text-xs font-semibold tracking-wide text-gray-400'>
-            <div className='w-56 shrink-0'>Short Link
-            </div>
-            <div className='flex-1'>Original Link</div>
-            <div className='w-14 shrink-0 text-center'>QR Code</div>
-            <div className='w-16 shrink-0 text-center'>
-                Clicks
-            </div>
-            <div className='w-28 shrink-0'>Status</div>
-            <div className='w-24 shrink-0 text-right'>Date</div>
-
-        </div>
-
-        {visitableLinks.map((link) => (
-            <LinkRow key={LinkTable.id} link={link} onCopy={onCopy} copiedId={copiedId}/>
-        ))}
-
-        {teaserLink && (
-            <div className='relative'
-            >
-                <LinkRow link={teaserLink} onCopy={onCopy} copiedId={copiedId} faded/>
-                <div className='absolute inset-0 flex items-center justify-center bg-[#12172a]/60'>
-                <p className='text-sm text-gray-300'>
-                    <span className='text-blue-400 underline cursor-pointer hover: text-blue-300'>
-                        Register Now
-                    </span>{" "}
-                    to enjoy Unlimited History
-
-                </p>
-                </div>
-
-            </div>
-        )
-
-        }
-      
+    <div className="flex items-center gap-2">
+      <span className={`text-sm font-medium ${isActive ? "text-green-400" : "text-yellow-500"}`}>
+        {status}
+      </span>
+      <span
+        className={`w-6 h-6 rounded-full flex items-center justify-center ${
+          isActive ? "bg-green-400/20" : "bg-yellow-500/20"
+        }`}
+      >
+        <Link2 size={12} className={isActive ? "text-green-400" : "text-yellow-500"} />
+      </span>
     </div>
-  )
+  );
 }
 
+function LinkRow({ link, onCopy, copiedId }) {
+  return (
+    <div className={`grid ${GRID_COLS} items-center gap-4 px-6 py-4 border-t border-[#1f2537]`}>
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="text-sm text-gray-300 truncate">{link.shortUrl}</span>
+        <button
+          onClick={() => onCopy(link.id, link.shortUrl)}
+          className="w-6 h-6 rounded-full bg-[#232a3d] flex items-center justify-center shrink-0 hover:bg-[#2c3448]"
+        >
+          {copiedId === link.id ? (
+            <Check size={12} className="text-green-400" />
+          ) : (
+            <Copy size={12} className="text-gray-400" />
+          )}
+        </button>
+      </div>
+
+      <div className="flex items-center gap-2 min-w-0">
+        {link.favicon && (
+          <img
+            src={link.favicon}
+            alt=""
+            className="w-6 h-6 rounded-md shrink-0 object-cover"
+            onError={(e) => (e.target.style.display = "none")}
+          />
+        )}
+        <span className="text-sm text-gray-300 truncate">{link.originalUrl}</span>
+      </div>
+
+      <div className="flex justify-center">
+        <img src={link.qrCode} alt="" className="w-8 h-8 opacity-80" />
+      </div>
+
+      <div className="text-sm text-gray-300 text-center">{link.clicks}</div>
+
+      <StatusBadge status={link.status} />
+
+      <div className="text-sm text-gray-400 text-right">{link.date}</div>
+    </div>
+  );
+}
+
+export default function LinkTable({ links = [], copiedId, onCopy }) {
+  return (
+    <div className="bg-[#12172a] border border-[#1f2537] rounded-2xl overflow-hidden max-w-5xl mx-auto">
+      <div className={`grid ${GRID_COLS} gap-4 px-6 py-4 text-xs font-semibold tracking-wide text-gray-400`}>
+        <div>Short Link</div>
+        <div>Original Link</div>
+        <div className="text-center">QR Code</div>
+        <div className="text-center">Clicks</div>
+        <div>Status</div>
+        <div className="text-right">Date</div>
+      </div>
+
+      {links.length === 0 ? (
+        <div className="px-6 py-10 text-center text-sm text-gray-500 border-t border-[#1f2537]">
+          No links yet — shorten one above to see it here.
+        </div>
+      ) : (
+        links.map((link) => <LinkRow key={link.id} link={link} onCopy={onCopy} copiedId={copiedId} />)
+      )}
+    </div>
+  );
+}
