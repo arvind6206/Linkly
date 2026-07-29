@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from 'lucide-react';
+import {Info} from 'lucide-react'
 
 function Hero() {
   return (
@@ -34,6 +35,38 @@ function Hero() {
           Shorten Now!
         </button>
 
+      </div>
+    </div>
+    <div className="flex flex-col items-center mt-6 space-y-4">
+
+      <div className="flex items-center gap-3">
+        <label className="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" className="sr-only peer" />
+
+          <div className="w-11 h-6 bg-[#1d2235] rounded-full border border-[#2d3550] peer-checked:bg-blue-600 transition-all duration-300"></div>
+
+          <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-5"></div>
+        </label>
+
+        <span className="text-gray-400 text-sm">
+          Auto Paste from Clipboard
+        </span>
+      </div>
+
+      <div className="flex items-center gap-1 text-sm text-gray-400">
+        <span>You can create</span>
+
+        <span className="text-pink-500 font-semibold">05</span>
+
+        <span>more links.</span>
+
+        <span className="underline cursor-pointer hover:text-white">
+          Register
+        </span>
+
+        <span>Now to enjoy Unlimited usage</span>
+
+        <Info size={14} className="text-gray-500 cursor-pointer" />
       </div>
     </div>
     </>
