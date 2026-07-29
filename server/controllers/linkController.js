@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid"
 import { LinkModel } from "../models/Link.js"
 
 export const createShortLink = async(req, res) => {

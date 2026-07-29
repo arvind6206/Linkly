@@ -1,8 +1,47 @@
 import React from "react";
-import {Link} from 'lucide-react';
+import {AlertCircle, Check, Copy, Link} from 'lucide-react';
 import {Info} from 'lucide-react'
+import api from "../api/axios";
+import { useState } from "react";
 
 function Hero() {
+
+ const  [longUrl, setLongUrl] = useState("")
+ const [pending, setPending] = useState(false)
+ const [error, setError] = useState("")
+ const [result, setResult] = useState(null)
+ const [copied, setCopied] = useState(false)
+
+ async function handleShorten(){
+  setError("")
+
+  if(!longUrl.trim()){
+    setError("Please paste a link first.")
+    return
+  }
+
+  setPending(true);
+  try {
+    const res = await api.post('/api/links/shorten',{
+      originalUrl: longUrl.trim()
+    })
+
+    setResult(res.data)
+    setLongUrl("")
+  } catch (err) {
+    setError(err.response?.data?.message || "Something went wrong. Try again")
+  } finally{
+    setPending(false)
+  }
+ }
+
+ function handleCopy(){
+  const shortUrl = result?.shortUrl || `http://localhost:3000/${result.shortCode}`
+  navigator.clipboard.writeText(shortUrl).catch(() => {})
+  setCopied(true)
+  setTimeout(() => setCopied(false), 1500)
+ }
+
   return (
     <>
     <section className="flex items-center justify-center pt-24">
@@ -28,15 +67,53 @@ function Hero() {
         <input
           type="text"
           placeholder="Enter the link here"
+          value={longUrl}
+          onChange={(e) => setLongUrl(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleShorten()}
           className="flex-1 bg-transparent px-4 text-white placeholder-gray-400 outline-none"
         />
 
-        <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 h-full rounded-full transition-all duration-300">
-          Shorten Now!
+        <button onClick={handleShorten}
+        disabled={pending}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 h-full rounded-full transition-all duration-300">
+          {pending ? "Shortening..." : "Shorten Now!"}
         </button>
 
       </div>
     </div>
+
+{error && (
+  <div className='flex justify-center mt-4'>
+    <div className='flexitems-center gap-2 text-red-400 text-sm'>
+      <AlertCircle size={14}/>
+      {error}
+
+    </div>
+
+  </div>
+)}
+
+{result && (
+  <div className='flex justify-center mt-4'>
+    <div className='flex items-center justify-between gap-4 bg-[#151b2b] border border-[#2d3550] rounded-full px-6 py-3 w-[700px]'>
+      <span className='text-blue-400 font-medium truncate'>
+        {result.shortUrl || `localhost:3000/${result.shortCode}`}
+      </span>
+
+      <button
+              onClick={handleCopy}
+              className="flex items-center gap-1.5 text-gray-300 hover:text-white text-sm shrink-0"
+            >
+              {copied ? <Check size={14} /> : <Copy size={14} />}
+              {copied ? "Copied" : "Copy"}
+            </button>
+
+
+    </div>
+
+  </div>
+)}
+
     <div className="flex flex-col items-center mt-6 space-y-4">
 
       <div className="flex items-center gap-3">
